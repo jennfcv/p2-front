@@ -9,7 +9,7 @@
             <div class="input-group-append">
               <button class="btn btn-outline-primary" @click="crearProyecto" type="button">Crear</button>
             </div>
-          </div>
+          </div>  
         </div>
         <div class="col"></div>
         <div class="col">
@@ -125,17 +125,9 @@ const crearProyecto = async () => {
     })
 
     codigoSala.value = data.sala.codigo
-
-    // Redirigir a la ruta con el código de la sala
-    // router.push({
-    //   name: 'diagrama',
-    //   params: {
-    //     id: resultado.id,
-    //     codigo: codigoSala.value
-    //   }
-    // })
+    
     router.push({
-      name: 'diagrama',
+      name: 'flutter',
       params: {
         id: resultado.id,
         codigo: codigoSala.value
@@ -158,13 +150,12 @@ const crearProyecto = async () => {
 
 const entrarDiagrama = (codigo, id) => {
   router.push({
-    name: 'diagrama',
+    name: 'flutter',
     params: { id: id, codigo: codigo }
   });
 };
 
 const formatFecha = (fecha) => {
-  // return moment(fecha).startOf('hour').fromNow();
   return moment(fecha).format('LT');
 }
 
@@ -176,7 +167,7 @@ const unirseProyecto = async () => {
     });
 
     router.push({
-      name: 'colaborativo',
+      name: 'flutter-colaborativo',
       params: {
         codigo: codigoColaboracion.value
       }
