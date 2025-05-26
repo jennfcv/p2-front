@@ -9,6 +9,6 @@ export class CenterWidget {
     const child = this.node.children?.[0];
     return `Center(
   child: ${WidgetFactory.generate(child)},
-)`;
+),`;
   }
 }

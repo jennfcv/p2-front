@@ -6,8 +6,10 @@ export class ColumnWidget {
   }
 
   toFlutter() {
-    const children = this.node.children?.map(child => WidgetFactory.generate(child)).join(',\n    ') ?? '';
+    const children = this.node.children?.map(child => WidgetFactory.generate(child)).join('\n    ') ?? '';
     return `Column(
+          mainAxisAlignment: MainAxisAlignment.${this.node.axis},
+     crossAxisAlignment: CrossAxisAlignment.${this.node.cross},
   children: [
     ${children}
   ],

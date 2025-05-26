@@ -24,22 +24,26 @@
 
 
     <button @click="addText()">Text</button>
-    <button @click="addinputNode('input', { x: 130, y: 150 })">input</button>
+    <button @click="addinputNode('input', { x: 130, y: 35 })">input</button>
     <!-- <button @click="addCustomNode('nav', 'lightskyblue', { x: 1160, y: 70 })">custom node</button>
     <button @click="addCustomNode('cricle', 'lightskyblue', { x: 50, y: 50 })">circle node</button> -->
     <br>
     <button class="link-dark rounded" @click="deleteNode">Eliminar</button>
 
-    <button @click="addLayoutNode('container', { x: 300, y: 500 })">container</button>
-    <button @click="addLayoutNode('listview', { x: 300, y: 500 })">list view</button>
-    <button @click="addLayoutNode('padding', { x: 100, y: 100 })">padding</button>
-    <button @click="addLayoutNode('center', { x: 100, y: 100 })">center</button>
-    <button @click="addLayoutNode('row', { x: 100, y: 100 })">row</button>    
-    <button @click="addLayoutNode('column', { x: 100, y: 100 })">column</button>
-    <button @click="addLayoutNode('sizedBox', { x: 100, y: 100 })">SizedBox</button>
-    <button @click="addLayoutNode('flexible', { x: 100, y: 100 })">Flexible</button>
-    <button @click="addLayoutNode('card', { x: 100, y: 100 })">Card</button>
-    <button @click="addLayoutNode('expanded', { x: 100, y: 100 })">Expanded</button>
+    <button @click="addLayoutNode('container', { x: 300, y: 500 },'#a6e482')">container</button>
+    <button @click="addLayoutNode('padding', { x: 100, y: 100 },'#ead1dc')">padding</button>
+    <button @click="addLayoutNode('listview', { x: 300, y: 500 }, '#f7de95')">list view</button>
+    <button @click="addLayoutNode('center', { x: 100, y: 100 }, '#8ebbda')">center</button>
+    <button @click="addLayoutNode('row', { x: 100, y: 100 },'#f49d9d')">row</button>    
+    <button @click="addLayoutNode('column', { x: 100, y: 100 }, '#ff9c00')">column</button>
+    <button @click="addLayoutNode('sizedBox', { x: 100, y: 100 },'#b4a7d6')">SizedBox</button>
+    <button @click="addLayoutNode('flexible', { x: 100, y: 100 }, '#c10a0a')">Flexible</button>
+    <button @click="addLayoutNode('card', { x: 100, y: 100 },'#8fce00')">Card</button>
+    <button @click="addLayoutNode('expanded', { x: 100, y: 100 },'#96ceb4')">Expanded</button>
+    <button @click="addLayoutNode('grid', { x: 100, y: 100 },'#ffcc5c')">Grid</button>
+    <button @click="addLayoutNode('input', { x: 100, y: 100 },'#ff79c2')">Input</button>
+    
+
 
     <p>-----------composition-----------</p>
     <p v-if="selectedNode">Nodo seleccionado: {{ selectedNode.type }}{{ selectedNode.key }}</p>
@@ -55,7 +59,17 @@
                 <ContainerWidget v-if="selectedNode?.type === 'container'" />
                 <PaddingWidget v-if="selectedNode?.type === 'padding'" />
                 <Scaffold v-if="selectedNode?.type === 'scaffold'" />
+                <RowWidget v-if="selectedNode?.type === 'row'" />
+                <ColumnWidget v-if="selectedNode?.type === 'column'" />
                 <DrawerWidget v-if="selectedNode?.type === 'drawer'" />
+                <SizedBoxWidget v-if="selectedNode?.type === 'sizedBox'" />
+                <CardWidget v-if="selectedNode?.type === 'card'" />
+                <GridWidget v-if="selectedNode?.type === 'grid'" />
+                <InputWidget v-if="selectedNode?.type === 'input'" />
+                
+
+
+
 
 
             </div>
@@ -88,6 +102,12 @@ import ContainerWidget from "@/components/widgets/layout/ContainerWidget.vue";
 import PaddingWidget from "@/components/widgets/layout/PaddingWidget.vue";
 import Scaffold from "@/components/widgets/composition/scaffoldWidget.vue";
 import DrawerWidget from "@/components/widgets/composition/drawerWidget.vue";
+import RowWidget from "@/components/widgets/layout/RowWidget.vue";
+import ColumnWidget from "@/components/widgets/layout/ColumnWidget.vue";
+import SizedBoxWidget from "@/components/widgets/layout/SizedBoxWidget .vue";
+import CardWidget from "@/components/widgets/layout/CardWidget.vue";
+import GridWidget from "@/components/widgets/layout/GridWidget.vue";
+import InputWidget from "@/components/widgets/layout/InputWidget.vue";
 
 
 
@@ -125,15 +145,6 @@ const arbolComoTexto = computed(() => formatearArbol(arbolJerarquico.value))
 
 
 onMounted(async () => {
-    // if (diagramRef.value) {
-    //     diagramManager = new DiagramManager(diagramRef.value, (nodeData) => {
-    //         selectedNode.value = nodeData
-    //         // console.log(selectedNode.value);
-    //     });
-    //     setDiagramManager(diagramManager);
-    // }
-
-
     socket = io("http://localhost:3000");
     socket.on("connect", () => {
         console.log("Conectado al WebSocket");
@@ -214,8 +225,8 @@ const addText = (tipo = "texto", text = "Nuevo Texto") => {
 //     emitir(json);
 
 // };
-const addLayoutNode = (valor, size = { x: 1160, y: 640 }) => {
-    const newNodeData = diagramManager.addLayout(valor, size);
+const addLayoutNode = (valor, size = { x: 1160, y: 640 }, color = 'aquamarine') => {
+    const newNodeData = diagramManager.addLayout(valor, size,{ x: 0, y: 0 },color);
     agregarNodoJson(valor, newNodeData);
     const json = diagramManager.saveDiagram();
 

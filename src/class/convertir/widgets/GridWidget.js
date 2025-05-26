@@ -7,12 +7,12 @@ export class RowWidget {
 
   toFlutter() {
     const children = this.node.children?.map(child => WidgetFactory.generate(child)).join(',\n    ') ?? '';
-    return `Row(
-      mainAxisAlignment: MainAxisAlignment.${this.node.axis},
-     crossAxisAlignment: CrossAxisAlignment.${this.node.cross},
+    return `GridView.count(
+  crossAxisCount: ${this.node.crossc || 4},
+  padding: EdgeInsets.all(10),
   children: [
-    ${children}
-  ],
+      ${children}
+      ],
 )`;
   }
 }

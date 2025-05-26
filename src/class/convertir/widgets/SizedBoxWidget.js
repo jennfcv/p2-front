@@ -4,9 +4,22 @@ export class SizedBoxWidget {
   }
 
   toFlutter() {
-    return `SizedBox(
-  width: ${this.node.width ?? 0},
-  height: ${this.node.height ?? 0},
+    let width = 50;
+  let height = 50;
+
+  if (this.node.size && typeof this.node.size === "string") {
+    const parts = this.node.size.split(" ");
+    if (parts.length === 2) {
+      const w = Number(parts[0]);
+      const h = Number(parts[1]);
+      if (!isNaN(w)) width = w;
+      if (!isNaN(h)) height = h;
+    }
+  }
+
+  return `SizedBox(
+  width: ${width},
+  height: ${height},
 )`;
   }
 }

@@ -200,7 +200,7 @@ export class DiagramManager {
 
     }
 
-    addLayout(type, size = { x: 0, y: 0 }, position = { x: 0, y: 0 }) {
+    addLayout(type, size = { x: 0, y: 0 }, position = { x: 0, y: 0 }, color = 'aquamarine') {
         const model = this.diagram.model;
         model.startTransaction("add node");
 
@@ -209,7 +209,7 @@ export class DiagramManager {
             category: "layout",
             type: type,
             loc: `${position.x} ${position.y}`,
-            color: "aquamarine",
+            color: color,
             size: `${size.x} ${size.y}`,
             label: "",
             child: null,
@@ -254,6 +254,7 @@ export class DiagramManager {
             color: "lightgreen",
             size: `${size.x} ${size.y}`,
             type: type,
+            field: 'text',
             opciones: [],
             validation: [],
         };
