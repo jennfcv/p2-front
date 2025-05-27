@@ -71,12 +71,6 @@
                 <InputWidget v-if="selectedNode?.type === 'input'" />
                 <FloattingWidget v-if="selectedNode?.type === 'circle'" />
 
-
-
-
-
-
-
             </div>
             <div class="col-2">
                 <pre>{{ arbolComoTexto }}</pre>
