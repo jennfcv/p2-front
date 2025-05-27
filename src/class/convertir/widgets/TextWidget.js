@@ -1,9 +1,9 @@
 export class TextWidget {
-  constructor(node) {
-    this.node = node;
-  }
+    constructor(node) {
+        this.node = node;
+    }
 
-  toFlutter() {
-    return `Text('${this.node.text ?? ''}')`;
-  }
+    toFlutter() {
+        return `Text('${this.node.text ?? ''}'),`;
+    }
 }

@@ -7,7 +7,7 @@ export class DrawerHeaderWidget {
     toFlutter() {
         const child = this.node.children?.[0];
         return `DrawerHeader(
-  child: ${WidgetFactory.generate(child)},
+  child: ${WidgetFactory.generate(child)}
 )`;
     }
 }

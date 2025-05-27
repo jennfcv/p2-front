@@ -20,6 +20,6 @@ export class SizedBoxWidget {
   return `SizedBox(
   width: ${width},
   height: ${height},
-)`;
+),`;
   }
 }

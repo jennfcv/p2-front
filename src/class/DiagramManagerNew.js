@@ -176,8 +176,30 @@ export class DiagramManager {
 
         this.diagram.model = new go.GraphLinksModel([], []);
 
+        this.diagram.linkTemplate = $(go.Link, {
+                routing: go.Link.AvoidsNodes,
+                corner: 5,
+                relinkableFrom: true,
+                relinkableTo: true
+            },
+            $(go.Shape), // la línea del link
+            $(go.Shape, { toArrow: "Standard" }) // la flecha al final
+        );
+
+
 
     }
+
+    addLink(fromKey, toKey) {
+        const model = this.diagram.model;
+        model.startTransaction("add link");
+
+        const linkData = { from: fromKey, to: toKey };
+        model.addLinkData(linkData);
+
+        model.commitTransaction("add link");
+    }
+
 
     addNodeToDiagram(type, color = 'lightskyblue', size = { x: 0, y: 0 }, position = { x: 0, y: 0 }, category = 'custom') {
         const model = this.diagram.model;

@@ -47,8 +47,11 @@
 
     <p>-----------composition-----------</p>
     <p v-if="selectedNode">Nodo seleccionado: {{ selectedNode.type }}{{ selectedNode.key }}</p>
+    
 
     <button @click="addLayoutNode('scaffold', { x: 360, y: 620 })">scaffold</button>
+    <button @click="generar()">generar</button>
+
 
 
 
@@ -66,7 +69,9 @@
                 <CardWidget v-if="selectedNode?.type === 'card'" />
                 <GridWidget v-if="selectedNode?.type === 'grid'" />
                 <InputWidget v-if="selectedNode?.type === 'input'" />
-                
+                <FloattingWidget v-if="selectedNode?.type === 'circle'" />
+
+
 
 
 
@@ -92,6 +97,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useSalaStore } from '@/stores/salas';
 import { useProyectosStore } from '@/stores/proyectos';
 import { io } from "socket.io-client";
+import { armarArbolConDatos, generarScaffoldWidgets } from "@/class/convertir/DartCode.js";
 
 //componsable
 import { useDiagram } from '../composables/useDiagram.js';
@@ -108,6 +114,7 @@ import SizedBoxWidget from "@/components/widgets/layout/SizedBoxWidget .vue";
 import CardWidget from "@/components/widgets/layout/CardWidget.vue";
 import GridWidget from "@/components/widgets/layout/GridWidget.vue";
 import InputWidget from "@/components/widgets/layout/InputWidget.vue";
+import FloattingWidget from "@/components/widgets/layout/FloattingWidget.vue";
 
 
 
@@ -217,14 +224,16 @@ const addText = (tipo = "texto", text = "Nuevo Texto") => {
     emitir(json);
 
 };
-// const addCustomNode = (valor, color, size = { x: 1160, y: 640 }, pos = { x: 0, y: 0 }) => {
-//     const newNodeData = diagramManager.addNodeToDiagram(valor, color, size, pos);
-//     agregarNodoJson(valor, newNodeData);
-//     const json = diagramManager.saveDiagram();
 
-//     emitir(json);
+const generar = () => {
+    const a = diagramManager.saveDiagram();
+    const raw = JSON.parse(a);
+    const ordernado = armarArbolConDatos(raw.nodeDataArray, arbolJerarquico.value);
+    // const final = generarScaffoldWidgets(ordernado);
+    console.log(generarScaffoldWidgets(ordernado));
+    
+};  
 
-// };
 const addLayoutNode = (valor, size = { x: 1160, y: 640 }, color = 'aquamarine') => {
     const newNodeData = diagramManager.addLayout(valor, size,{ x: 0, y: 0 },color);
     agregarNodoJson(valor, newNodeData);

@@ -8,6 +8,6 @@ export class FlexibleWidget {
         const child = this.node.children?.[0];
         return `Flexible(
 child: ${WidgetFactory.generate(child)},
-)`;
+),`;
     }
 }

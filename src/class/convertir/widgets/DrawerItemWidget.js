@@ -10,13 +10,13 @@ export class DrawerItemWidget {
       .map(child => WidgetFactory.generate(child))
       .join(',\n    ');
 
-    const content = childWidgets || `Text('${this.node.text ?? ''}')`;
+    const content = childWidgets || `Text('${this.node.text ?? 'texto default'}'),`;
 
     return `ListTile(
-  title: ${content},    
-  onTap: () {
-    // TODO: Handle tap
-  },
-)`;
+        title: ${content}  
+        onTap: () {
+          // TODO: Handle tap
+        },
+      )`;
   }
 }

@@ -8,7 +8,7 @@ export class PaddingWidget {
         const child = this.node.children?.[0];
         return `Padding(
   padding: EdgeInsets.all(8.0),
-  child: ${WidgetFactory.generate(child)},
-)`;
+  child: ${WidgetFactory.generate(child)}
+),`;
     }
 }

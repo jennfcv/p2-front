@@ -13,7 +13,7 @@ export class CardWidget {
     return `Card(
       elevation: ${this.node.elevation || 1},
       margin: EdgeInsets.all(${this.node.margin || 12}),
-  child: ${child},
-)`;
+  child: ${child}
+),`;
     }
 }

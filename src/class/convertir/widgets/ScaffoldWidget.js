@@ -22,9 +22,9 @@ export class ScaffoldWidget {
     
 
     const appBar = appBarNode ? `appBar: ${WidgetFactory.generate(appBarNode)},` : '';
-    const body = bodyNode ? `body: ${WidgetFactory.generate(bodyNode)},` : '';
+    const body = bodyNode ? `body: ${WidgetFactory.generate(bodyNode)}` : '';
     const drawer = drawerNode ? `drawer: ${WidgetFactory.generate(drawerNode)},` : '';
-    const fab = fabNode ? `floatingActionButton: ${WidgetFactory.generate(fabNode)},` : '';
+    const fab = fabNode ? `floatingActionButton: ${WidgetFactory.generate(fabNode)}` : '';
 
 
     return `// ===== ${screenName} =====

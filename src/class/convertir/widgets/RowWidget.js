@@ -6,10 +6,10 @@ export class RowWidget {
   }
 
   toFlutter() {
-    const children = this.node.children?.map(child => WidgetFactory.generate(child)).join(',\n    ') ?? '';
+    const children = this.node.children?.map(child => WidgetFactory.generate(child)).join('\n    ') ?? '';
     return `Row(
-      mainAxisAlignment: MainAxisAlignment.${this.node.axis},
-     crossAxisAlignment: CrossAxisAlignment.${this.node.cross},
+      mainAxisAlignment: MainAxisAlignment.${this.node.axis || 'spaceEvenly'},
+     crossAxisAlignment: CrossAxisAlignment.${this.node.cross || 'center'},
   children: [
     ${children}
   ],

@@ -22,7 +22,7 @@ export function useTree(externalSelectedNode) {
         }
 
         return false;
-    };  
+    };
 
     const agregarNuevoNodo = (nuevoNodo) => {
         if (!selectedNode.value) {
@@ -79,6 +79,27 @@ export function useTree(externalSelectedNode) {
         return null;
     };
 
+    const obtenerScaffoldIdsYTextos = () => {
+        const lista = [];
+
+        const recorrer = (nodo) => {
+            if (nodo.tipo === 'scaffold') {
+                lista.push({
+                    id: nodo.id,
+                    nombre: nodo.type || `Scaffold ${nodo.id}`
+                });
+            }
+
+            if (nodo.children && nodo.children.length > 0) {
+                for (const child of nodo.children) {
+                    recorrer(child);
+                }
+            }
+        };
+
+        recorrer(arbolJerarquico.value);
+        return lista;
+    };
 
 
     return {
@@ -86,6 +107,7 @@ export function useTree(externalSelectedNode) {
         agregarNuevoNodo,
         obtenerIdsRecursivos,
         eliminarNodoDelArbol,
-        buscarNodoPorId
+        buscarNodoPorId,
+        obtenerScaffoldIdsYTextos
     };
 }

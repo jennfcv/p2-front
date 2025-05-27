@@ -47,6 +47,43 @@ function addNodeCustom(type,color, size = { x: 0, y: 0 }, position = { x: 0, y: 
     return diagramManager.addNodeToDiagram(type,color, size, position,category);
 }
 
+function linkNodes(fromKey, toKey) {
+  if (!diagramManager || !fromKey || !toKey) return;
+
+  const diagram = diagramManager.diagram;
+  const model = diagram.model;
+
+  diagram.startTransaction("link exclusivo");
+
+  const linksToRemove = diagram.findLinksByExample({ from: fromKey });
+  linksToRemove.each(link => model.removeLinkData(link.data));
+
+  model.addLinkData({ from: fromKey, to: toKey });
+
+  diagram.commitTransaction("link exclusivo");
+
+  diagram.requestUpdate();
+}   
+
+function removeOutgoingLinks(fromKey) {
+  if (!diagramManager || !fromKey) return;
+
+  const diagram = diagramManager.diagram;
+  const model = diagram.model;
+
+  diagram.startTransaction("eliminar enlaces salientes");
+
+  const linksToRemove = diagram.findLinksByExample({ from: fromKey });
+  linksToRemove.each(link => model.removeLinkData(link.data));
+
+  diagram.commitTransaction("eliminar enlaces salientes");
+
+  diagram.requestUpdate();
+}
+
+
+
+
 export function useDiagram() {
     return {
         selectedNode,
@@ -56,6 +93,9 @@ export function useDiagram() {
         addNode,
         setEmitir,
         addNodeText,
-        addNodeCustom
+        addNodeCustom,
+        linkNodes,
+        removeOutgoingLinks,
+        
     };
 }

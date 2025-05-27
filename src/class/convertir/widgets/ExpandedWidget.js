@@ -9,6 +9,6 @@ export class ExpandedWidget {
         const child = this.node.children?.[0];
         return `Expanded(
   child: ${WidgetFactory.generate(child)},
-)`;
+),`;
     }
 }

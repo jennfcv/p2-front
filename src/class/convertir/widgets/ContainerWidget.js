@@ -7,7 +7,7 @@ export class ContainerWidget {
     toFlutter() {
         const child = this.node.children?.[0];
                 return `Container(
-          child: ${WidgetFactory.generate(child)},
-        )`;
+          child: ${WidgetFactory.generate(child)}
+        ),`;
     }
 }

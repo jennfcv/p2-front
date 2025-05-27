@@ -8,7 +8,7 @@ export class CenterWidget {
   toFlutter() {
     const child = this.node.children?.[0];
     return `Center(
-  child: ${WidgetFactory.generate(child)},
+  child: ${WidgetFactory.generate(child)}
 ),`;
   }
 }
