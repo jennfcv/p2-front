@@ -50,7 +50,7 @@
     
 
     <button @click="addLayoutNode('scaffold', { x: 360, y: 620 })">scaffold</button>
-    <button @click="generar()">generar</button>
+    <button @click="generarPaquete()">generar</button>
 
 
 
@@ -109,7 +109,7 @@ import CardWidget from "@/components/widgets/layout/CardWidget.vue";
 import GridWidget from "@/components/widgets/layout/GridWidget.vue";
 import InputWidget from "@/components/widgets/layout/InputWidget.vue";
 import FloattingWidget from "@/components/widgets/layout/FloattingWidget.vue";
-
+import JSZip from 'jszip';
 
 
 
@@ -207,6 +207,33 @@ onBeforeUnmount(() => {
     }
     generarImagenDelDiagrama();
 })
+
+
+const generarPaquete = () => {
+    console.log('paquete generado');
+
+    const a = diagramManager.saveDiagram();
+    const raw = JSON.parse(a);
+    const ordernado = armarArbolConDatos(raw.nodeDataArray, arbolJerarquico.value);
+    // const final = generarScaffoldWidgets(ordernado);
+    console.log(generarScaffoldWidgets(ordernado));
+    const code = generarScaffoldWidgets(ordernado);
+
+    const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+
+    // Crear enlace para descargar
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = tituloProyecto.value + '.dart'; 
+    document.body.appendChild(link);
+    link.click();
+
+    // Limpieza
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+}
 
 
 

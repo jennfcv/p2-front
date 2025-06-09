@@ -1,7 +1,7 @@
 import { WidgetFactory } from './widgets.js';
 
 export function generarScaffoldWidgets(arbol) {
-    let widget = `//import 'package:flutter/material.dart';\n\n`;
+    let widget = `import 'package:flutter/material.dart';\n\n`;
 
     if (!arbol || !Array.isArray(arbol.children)) {
         console.error('Formato de árbol inválido');
@@ -45,19 +45,15 @@ export function armarArbolConDatos(nodos, jerarquia) {
         let nodoReal;
 
         if (nodoBase) {
-            // Si se encuentra en nodeDataArray, clonar sus propiedades
             nodoReal = {...nodoBase };
         } else {
-            // Si no se encuentra (por ejemplo, el nodo raíz), construir manualmente con lo mínimo
             nodoReal = {
                 key: nodoJerarquia.id,
                 type: nodoJerarquia.tipo,
                 children: []
             };
-            // console.warn(`No se encontró nodo con key/id: ${nodoJerarquia.id}`);
         }
 
-        // Si el nodo es tipo select con opciones, incluirlas como hijos
         if (nodoReal.type === "select" && Array.isArray(nodoReal.opciones)) {
             nodoReal.children = nodoReal.opciones.map(opcion => ({
                 key: opcion,

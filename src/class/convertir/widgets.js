@@ -42,7 +42,7 @@ export class WidgetFactory {
 
     static generateScreen(node) {
         if (!node || node.type !== 'scaffold') {
-            return `// Skipping unsupported screen type: ${node?.type ?? 'unknown'}`;
+            return `// skipping unsupported screen type: ${node?.type ?? 'unknown'}`;
         }
 
         const screen = new ScaffoldWidget(node);
@@ -52,7 +52,7 @@ export class WidgetFactory {
 
     static generate(node) {
         if (!node || typeof node.type !== 'string') {
-            return '// Invalid or undefined widget node';
+            return '// invalid or undefined widget node';
         }
 
         switch (node.type) {
@@ -97,7 +97,7 @@ export class WidgetFactory {
 
 
             default:
-                return `// Unsupported widget type: ${node.type}`;
+                return `// unsupported widget type: ${node.type}`;
         }
     }
 }
