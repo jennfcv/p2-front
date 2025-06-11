@@ -156,110 +156,127 @@ function convertTreeToGraphLinksModel(tree) {
 
 
 
-const tree = {
-    "id": 1,
-    "tipo": "scaffold",
-    "pos": "0 0",
-    "size": "360 620",
-    "children": [{
-            "id": 2,
-            "tipo": "appbar",
+const tree =
+
+    {
+        "id": 0,
+        "tipo": "root",
+        "children": [{
+            "id": 1,
+            "tipo": "scaffold",
             "pos": "0 0",
-            "size": "360 56",
-            "children": []
-        },
-        {
-            "id": 3,
-            "tipo": "body",
-            "pos": "0 56",
-            "size": "360 508",
+            "size": "360 640",
             "children": [{
-                "id": 4,
-                "tipo": "column",
-                "pos": "0 0",
-                "size": "360 508",
-                "children": [{
-                        "id": 5,
-                        "tipo": "card",
+                    "id": 2,
+                    "tipo": "appbar",
+                    "pos": "0 0",
+                    "size": "360 56",
+                    "children": [{
+                        "id": 3,
+                        "tipo": "texto",
                         "pos": "16 16",
-                        "size": "328 80",
+                        "size": "328 24",
+                        "text": "Reseñas de Películas"
+                    }]
+                },
+                {
+                    "id": 4,
+                    "tipo": "body",
+                    "pos": "0 56",
+                    "size": "360 584",
+                    "children": [{
+                        "id": 5,
+                        "tipo": "listview",
+                        "pos": "0 0",
+                        "size": "360 584",
                         "children": [{
-                            "id": 6,
-                            "tipo": "center",
-                            "pos": "0 0",
-                            "size": "328 80",
-                            "children": [{
-                                "id": 7,
-                                "tipo": "texto",
-                                "pos": "0 0",
-                                "size": "200 24",
-                                "text": "Bienvenido a los comentarios"
-                            }]
-                        }]
-                    },
-                    {
-                        "id": 8,
-                        "tipo": "expanded",
-                        "pos": "0 112",
-                        "size": "360 396",
-                        "children": [{
-                            "id": 9,
-                            "tipo": "listview",
-                            "pos": "0 0",
-                            "size": "360 396",
-                            "children": [{
-                                    "id": 10,
-                                    "tipo": "padding",
-                                    "pos": "0 0",
-                                    "size": "360 70",
+                                "id": 6,
+                                "tipo": "card",
+                                "pos": "8 8",
+                                "size": "344 150",
+                                "children": [{
+                                    "id": 7,
+                                    "tipo": "column",
+                                    "pos": "8 8",
+                                    "size": "328 134",
                                     "children": [{
-                                        "id": 11,
-                                        "tipo": "card",
-                                        "pos": "16 0",
-                                        "size": "328 70",
-                                        "children": [{
+                                            "id": 8,
+                                            "tipo": "texto",
+                                            "pos": "0 0",
+                                            "size": "328 24",
+                                            "text": "La Gran Aventura"
+                                        },
+                                        {
+                                            "id": 9,
+                                            "tipo": "texto",
+                                            "pos": "0 32",
+                                            "size": "328 100",
+                                            "text": "Una historia emocionante llena de acción y giros inesperados."
+                                        }
+                                    ]
+                                }]
+                            },
+                            {
+                                "id": 10,
+                                "tipo": "card",
+                                "pos": "8 168",
+                                "size": "344 150",
+                                "children": [{
+                                    "id": 11,
+                                    "tipo": "column",
+                                    "pos": "8 8",
+                                    "size": "328 134",
+                                    "children": [{
                                             "id": 12,
                                             "tipo": "texto",
-                                            "pos": "16 16",
-                                            "size": "296 38",
-                                            "text": "Comentario 1: ¡Buen trabajo!"
-                                        }]
-                                    }]
-                                },
-                                {
-                                    "id": 13,
-                                    "tipo": "padding",
-                                    "pos": "0 80",
-                                    "size": "360 70",
-                                    "children": [{
-                                        "id": 14,
-                                        "tipo": "card",
-                                        "pos": "16 0",
-                                        "size": "328 70",
-                                        "children": [{
-                                            "id": 15,
+                                            "pos": "0 0",
+                                            "size": "328 24",
+                                            "text": "El Misterio del Lago"
+                                        },
+                                        {
+                                            "id": 13,
                                             "tipo": "texto",
-                                            "pos": "16 16",
-                                            "size": "296 38",
-                                            "text": "Comentario 2: Muy útil esta app."
-                                        }]
-                                    }]
-                                }
-                            ]
-                        }]
-                    }
-                ]
-            }]
-        },
-        {
-            "id": 16,
-            "tipo": "circle",
-            "pos": "288 552",
-            "size": "56 56",
-            "children": []
-        }
-    ]
-};
+                                            "pos": "0 32",
+                                            "size": "328 100",
+                                            "text": "Intriga y suspenso en un pequeño pueblo rodeado por un lago encantado."
+                                        }
+                                    ]
+                                }]
+                            },
+                            {
+                                "id": 14,
+                                "tipo": "card",
+                                "pos": "8 328",
+                                "size": "344 150",
+                                "children": [{
+                                    "id": 15,
+                                    "tipo": "column",
+                                    "pos": "8 8",
+                                    "size": "328 134",
+                                    "children": [{
+                                            "id": 16,
+                                            "tipo": "texto",
+                                            "pos": "0 0",
+                                            "size": "328 24",
+                                            "text": "Comedia Urbana"
+                                        },
+                                        {
+                                            "id": 17,
+                                            "tipo": "texto",
+                                            "pos": "0 32",
+                                            "size": "328 100",
+                                            "text": "Una comedia ligera sobre las locuras de un grupo de amigos en la ciudad."
+                                        }
+                                    ]
+                                }]
+                            }
+                        ]
+                    }]
+                }
+            ]
+        }]
+    }
+
 
 console.log(JSON.stringify(tree, null, 2));
 console.log('-----------------');

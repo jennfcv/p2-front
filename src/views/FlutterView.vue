@@ -37,10 +37,12 @@
     <button @click="addLayoutNode('grid', { x: 100, y: 100 },'#ffcc5c')">Grid</button>
     <button @click="addLayoutNode('input', { x: 100, y: 100 },'#ff79c2')">Input Avanzado</button>
     <button @click="addLayoutNode('scaffold', { x: 360, y: 620 })">Scaffold</button>
-  </div>
 
-  <!-- Nodo seleccionado -->
-  <p class="mt-2"><strong>Nodo seleccionado:</strong> {{ selectedNode?.type }}{{ selectedNode?.key }}</p>
+    <button @click="limpiarLienso()">Limpiar lienzo</button>
+    <!-- <button @click="addLayoutNode('scaffold', { x: 360, y: 620 })">Scaffold</button> -->
+
+
+  </div>
 
   <!-- Generar código Dart -->
   <div class="my-2">
@@ -54,7 +56,7 @@
       placeholder="Describe lo que deseas generar"
       class="form-control"
     />
-    <button @click="generarDesdePrompt" class="btn btn-success">
+    <button @click="generarYAgregarJson" class="btn btn-success">
       Generar por Prompt IA
     </button>
   </div>
@@ -66,6 +68,12 @@
       Generar por Imagen (OCR)
     </button>
   </div>
+  <div class="input-group mt-3">
+    <button @click="example" class="btn btn-primary">
+      example
+    </button>
+  </div>
+  <p class="mt-2"><strong>Nodo seleccionado:</strong> {{ selectedNode?.type }}{{ selectedNode?.key }}</p>
 
   <!-- Área de trabajo -->
   <div class="container-fluid mt-4">
@@ -123,6 +131,7 @@ import FloattingWidget from "@/components/widgets/layout/FloattingWidget.vue";
 import JSZip from 'jszip';
 
 //componentes
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 const diagramRef = ref(null);
 let diagramManager = null;
 let socket = null;
@@ -139,6 +148,43 @@ const tituloProyecto = ref('');
 const colaborador = ref("");
 const mensaje = ref("");
 const prompt = ref("");
+const coloresPorTipo = {
+  container: '#a6e482',
+  padding: '#ead1dc',
+  listview: '#f7de95',
+  center: '#8ebbda',
+  row: '#f49d9d',
+  column: '#ff9c00',
+  sizedBox: '#b4a7d6',
+  flexible: '#c10a0a',
+  card: '#8fce00',
+  expanded: '#96ceb4',
+  grid: '#ffcc5c',
+  input: '#ff79c2',
+  scaffold: '#a0a0a0'
+};
+const COMPONENTES_VALIDOS = [
+  'scaffold',
+  'appbar',
+  'body',
+  'circle',
+  'drawer',
+  'drawerItem',
+  'drawerHeader',
+  'container',
+  'listview',
+  'padding',
+  'center',
+  'row',
+  'column',
+  'sizedBox',
+  'flexible',
+  'card',
+  'expanded',
+  'input',
+  'texto', 
+];
+
 
 
 // const selectedNode = ref({})
@@ -149,6 +195,268 @@ const { arbolJerarquico, agregarNuevoNodo, buscarNodoPorId, obtenerIdsRecursivos
 //computed
 const arbolComoTexto = computed(() => formatearArbol(arbolJerarquico.value))
 
+const example = () =>{
+  const resultadoJson = 
+
+  {
+  "id": 0,
+  "tipo": "root",
+  "children": [
+    {
+      "id": 1,
+      "tipo": "scaffold",
+      "pos": "0 0",
+      "size": "360 640",
+      "children": [
+        {
+          "id": 2,
+          "tipo": "body",
+          "pos": "0 0",
+          "size": "360 640",
+          "children": [
+            {
+              "id": 3,
+              "tipo": "column",
+              "pos": "0 0",
+              "size": "360 640",
+              "children": [
+                {
+                  "id": 4,
+                  "tipo": "expanded",
+                  "pos": "0 0",
+                  "size": "360 320",
+                  "children": [
+                    {
+                      "id": 5,
+                      "tipo": "center",
+                      "pos": "0 0",
+                      "size": "360 320",
+                      "children": [
+                        {
+                          "id": 6,
+                          "tipo": "texto",
+                          "pos": "0 0",
+                          "size": "360 24",
+                          "text": "Hola Mundo"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": 7,
+                  "tipo": "container",
+                  "pos": "0 320",
+                  "size": "360 48",
+                  "children": [
+                    {
+                      "id": 8,
+                      "tipo": "row",
+                      "pos": "0 0",
+                      "size": "360 48",
+                      "children": [
+                        {
+                          "id": 9,
+                          "tipo": "texto",
+                          "pos": "16 12",
+                          "size": "100 24",
+                          "text": "Izquierda"
+                        },
+                        {
+                          "id": 10,
+                          "tipo": "texto",
+                          "pos": "244 12",
+                          "size": "100 24",
+                          "text": "Derecha"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+ 
+  arbolJerarquico.value = resultadoJson;
+  convertirJsonJerarquicoADiagrama(resultadoJson);
+}
+
+
+
+const limpiarLienso = () =>{
+    diagramManager.clearDiagram()
+    arbolJerarquico.value = {    id: 0,
+    tipo: 'root',
+    children: []}
+}
+// const convertirJsonJerarquicoADiagrama = (nodo) => {
+//   if (!nodo || !nodo.tipo) return;
+
+//   const [x, y] = nodo.pos ? nodo.pos.split(' ').map(Number) : [0, 0];
+//   const pos = { x, y };
+//   const [w, h] = nodo.size ? nodo.size.split(' ').map(Number) : [100, 100];
+//   const size = { x: w, y: h };
+//   const colorPorDefecto = coloresPorTipo[nodo.tipo] || '#cccccc';
+
+//   // Ignorar el root
+//   if (nodo.tipo !== 'root') {
+//     if (nodo.tipo === 'input' || nodo.tipo === 'appBar') {
+
+//       diagramManager.addRectangleTextNode(nodo.tipo, size,  nodo.text || nodo.field || 'input', pos);
+//       const json = diagramManager.saveDiagram();
+//       emitir(json);
+
+//       // addinputNode(nodo.tipo, size, nodo.text || nodo.field || 'input', pos);
+//     } else if (nodo.tipo === 'texto' || nodo.tipo === 'text' || nodo.tipo === 'label') {
+      
+      
+//       diagramManager.addTextNode(nodo.tipo, nodo.text || 'Nuevo Texto');
+//       const json = diagramManager.saveDiagram();
+//       emitir(json);
+
+//       // addText(nodo.tipo, nodo.text || 'Nuevo Texto');
+//     } else if (COMPONENTES_VALIDOS.includes(nodo.tipo)) {
+
+//       diagramManager.addLayout(nodo.tipo, size,pos,colorPorDefecto);
+//       const json = diagramManager.saveDiagram();
+//       emitir(json);
+
+//       // addLayoutNode(nodo.tipo, size, colorPorDefecto, pos);
+//     } else {
+//       console.warn('Tipo de componente no reconocido:', nodo.tipo);
+//     }
+//   }
+
+//   // Procesar hijos
+//   if (Array.isArray(nodo.children)) {
+//     nodo.children.forEach(child => convertirJsonJerarquicoADiagrama(child));
+//   }
+// };
+
+
+async function generarYAgregarJson() {
+  try {
+    // const resultadoJson = await generarJsonDesdePrompt(prompt.value);
+
+
+    // Si quieres, puedes limpiar el diagrama antes
+    // limpiarDiagrama();
+    console.log(prompt.value);
+    
+    // arbolJerarquico.value = resultadoJson;
+    // convertirJsonJerarquicoADiagrama(resultadoJson);
+  } catch (error) {
+    console.error(error);
+    alert(error.message);
+  }
+}
+
+async function generarJsonDesdePrompt(prompt) {
+  if (!prompt || prompt.trim() === '') {
+    throw new Error('El prompt está vacío');
+  }
+
+  const instrucciones = `
+Quiero que generes un JSON estructurado siguiendo estas especificaciones. La respuesta siempre debe ser SOLO el JSON. No escribas explicaciones, no escribas introducción, no cierres con conclusiones. SOLO genera el JSON correspondiente.
+
+Formato del JSON:
+
+La estructura es jerárquica. Cada nodo tiene:
+
+"id": número entero único (incremental)
+"tipo": uno de los componentes válidos (ver lista abajo)
+"pos": posición X Y como string "x y"
+"size": tamaño WIDTH HEIGHT como string "w h"
+"children": arreglo de nodos hijos
+"text" (opcional): solo si es tipo texto, input, select, check o radio
+"field" (obligatorio si es input): text, select, check o radio
+"opciones" (obligatorio si es select o radio): array de strings
+"redirige" (solo en tipo circle): puede ser null o scaffold{id} indicando a cuál scaffold redirige
+
+Lista de componentes válidos para "tipo":
+
+scaffold
+appbar
+body
+circle (es un FloatingActionButton)
+drawer
+drawerItem
+drawerHeader
+container
+listview
+padding
+center
+row
+column
+sizedBox
+flexible
+card
+expanded
+input (requiere "field")
+texto
+
+Reglas específicas:
+Siempre debe comenzar con un nodo raíz con "tipo": "root" y "id": 0. "children" contiene de 1 a N scaffolds.
+Puede haber múltiples scaffold a nivel raíz.
+Cada scaffold puede contener como máximo:
+Un appbar (opcional)
+Un body (obligatorio si no hay drawer)
+Opcionalmente un circle (FloatingActionButton) como hijo directo del scaffold
+El "circle" puede tener "redirige": null o "redirige": "scaffold{id}" si redirige a otro scaffold del árbol.
+Los inputs (tipo: "input") requieren obligatoriamente el campo "field", que puede ser:
+"text" → "text" opcional
+"select" → "text" obligatorio, "opciones" obligatorio (array de strings)
+"check" → "text" obligatorio
+"radio" → "text" obligatorio, "opciones" obligatorio (array de strings)
+Los textos (tipo: "texto") deben tener siempre el campo "text".
+Los "children" pueden contener componentes anidados de cualquier tipo válido, organizados de manera coherente como en un diseño de interfaz.
+Genera estructuras extensas, realistas y completas, incluyendo listas, formularios, textos, inputs variados.
+El JSON generado debe ser sintácticamente correcto.
+
+Respuesta esperada: SOLO el JSON correspondiente. SIN texto adicional.
+
+PROMPT DEL USUARIO:
+${prompt}
+  `.trim();
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o', // o gpt-4, gpt-4-turbo
+      messages: [{ role: 'user', content: instrucciones }],
+      temperature: 0.2
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || 'Error al generar el JSON');
+  }
+
+  // El contenido del JSON vendrá como texto, necesitamos parsearlo
+  const contenido = data.choices?.[0]?.message?.content;
+
+  let resultadoJson;
+  try {
+    resultadoJson = JSON.parse(contenido);
+  } catch (err) {
+    console.error('Error al parsear JSON:', contenido);
+    throw new Error('El contenido generado no es un JSON válido.');
+  }
+
+  return resultadoJson;
+}
 
 
 onMounted(async () => {
@@ -168,11 +476,10 @@ onMounted(async () => {
 
             const arbol = JSON.parse(data.payload)[1]
             const diagramaRaw = JSON.parse(data.payload)[0]
-
+            
             if (diagramRef.value) {
                 diagramManager = new DiagramManager(diagramRef.value, (nodeData) => {
                     selectedNode.value = nodeData
-                    console.log(selectedNode.value);
                     
                 });
                 diagramManager.loadDiagram(diagramaRaw);
@@ -243,6 +550,16 @@ const generarPaquete = () => {
 
 
 
+
+const generar = () => {
+  const a = diagramManager.saveDiagram();
+  const raw = JSON.parse(a);
+  const ordernado = armarArbolConDatos(raw.nodeDataArray, arbolJerarquico.value);
+  // const final = generarScaffoldWidgets(ordernado);
+  console.log(generarScaffoldWidgets(ordernado));
+  
+};  
+
 const addText = (tipo = "texto", text = "Nuevo Texto") => {
     const newNodeData = diagramManager.addTextNode(tipo, text);
     agregarNodoJson(tipo, newNodeData);
@@ -251,16 +568,6 @@ const addText = (tipo = "texto", text = "Nuevo Texto") => {
     emitir(json);
 
 };
-
-const generar = () => {
-    const a = diagramManager.saveDiagram();
-    const raw = JSON.parse(a);
-    const ordernado = armarArbolConDatos(raw.nodeDataArray, arbolJerarquico.value);
-    // const final = generarScaffoldWidgets(ordernado);
-    console.log(generarScaffoldWidgets(ordernado));
-    
-};  
-
 const addLayoutNode = (valor, size = { x: 1160, y: 640 }, color = 'aquamarine') => {
     const newNodeData = diagramManager.addLayout(valor, size,{ x: 0, y: 0 },color);
     agregarNodoJson(valor, newNodeData);
