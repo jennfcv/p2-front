@@ -289,173 +289,288 @@ const example = () =>{
 
 
 
-const limpiarLienso = () =>{
-    diagramManager.clearDiagram()
-    arbolJerarquico.value = {    id: 0,
+const limpiarLienso = () => {
+  if (!diagramManager) {
+    console.warn('⚠️ diagramManager no está inicializado en limpiarLienso');
+    return;
+  }
+  diagramManager.clearDiagram();
+  arbolJerarquico.value = {
+    id: 0,
     tipo: 'root',
-    children: []}
-}
-// const convertirJsonJerarquicoADiagrama = (nodo) => {
-//   if (!nodo || !nodo.tipo) return;
+    children: []
+  };
+};
 
-//   const [x, y] = nodo.pos ? nodo.pos.split(' ').map(Number) : [0, 0];
-//   const pos = { x, y };
-//   const [w, h] = nodo.size ? nodo.size.split(' ').map(Number) : [100, 100];
-//   const size = { x: w, y: h };
-//   const colorPorDefecto = coloresPorTipo[nodo.tipo] || '#cccccc';
+ const convertirJsonJerarquicoADiagrama = (nodo) => {
+   if (!nodo || !nodo.tipo) return;
 
-//   // Ignorar el root
-//   if (nodo.tipo !== 'root') {
-//     if (nodo.tipo === 'input' || nodo.tipo === 'appBar') {
+   const [x, y] = nodo.pos ? nodo.pos.split(' ').map(Number) : [0, 0];
+   const pos = { x, y };
+   const [w, h] = nodo.size ? nodo.size.split(' ').map(Number) : [100, 100];
+   const size = { x: w, y: h };
+   const colorPorDefecto = coloresPorTipo[nodo.tipo] || '#cccccc';
 
-//       diagramManager.addRectangleTextNode(nodo.tipo, size,  nodo.text || nodo.field || 'input', pos);
-//       const json = diagramManager.saveDiagram();
-//       emitir(json);
+   // Ignorar el root
+   if (nodo.tipo !== 'root') {
+     if (nodo.tipo === 'input' || nodo.tipo === 'appBar') {
 
-//       // addinputNode(nodo.tipo, size, nodo.text || nodo.field || 'input', pos);
-//     } else if (nodo.tipo === 'texto' || nodo.tipo === 'text' || nodo.tipo === 'label') {
+       diagramManager.addRectangleTextNode(nodo.tipo, size,  nodo.text || nodo.field || 'input', pos);
+       const json = diagramManager.saveDiagram();
+       emitir(json);
+
+       // addinputNode(nodo.tipo, size, nodo.text || nodo.field || 'input', pos);
+     } else if (nodo.tipo === 'texto' || nodo.tipo === 'text' || nodo.tipo === 'label') {
       
       
-//       diagramManager.addTextNode(nodo.tipo, nodo.text || 'Nuevo Texto');
-//       const json = diagramManager.saveDiagram();
-//       emitir(json);
+       diagramManager.addTextNode(nodo.tipo, nodo.text || 'Nuevo Texto');
+       const json = diagramManager.saveDiagram();
+       emitir(json);
 
-//       // addText(nodo.tipo, nodo.text || 'Nuevo Texto');
-//     } else if (COMPONENTES_VALIDOS.includes(nodo.tipo)) {
+       // addText(nodo.tipo, nodo.text || 'Nuevo Texto');
+     } else if (COMPONENTES_VALIDOS.includes(nodo.tipo)) {
 
-//       diagramManager.addLayout(nodo.tipo, size,pos,colorPorDefecto);
-//       const json = diagramManager.saveDiagram();
-//       emitir(json);
+       diagramManager.addLayout(nodo.tipo, size,pos,colorPorDefecto);
+       const json = diagramManager.saveDiagram();
+       emitir(json);
 
-//       // addLayoutNode(nodo.tipo, size, colorPorDefecto, pos);
-//     } else {
-//       console.warn('Tipo de componente no reconocido:', nodo.tipo);
-//     }
-//   }
+       // addLayoutNode(nodo.tipo, size, colorPorDefecto, pos);
+     } else {
+       console.warn('Tipo de componente no reconocido:', nodo.tipo);
+     }
+   }
 
-//   // Procesar hijos
-//   if (Array.isArray(nodo.children)) {
-//     nodo.children.forEach(child => convertirJsonJerarquicoADiagrama(child));
-//   }
-// };
+   // Procesar hijos
+   if (Array.isArray(nodo.children)) {
+     nodo.children.forEach(child => convertirJsonJerarquicoADiagrama(child));
+   }
+ };
 
 
 async function generarYAgregarJson() {
+  console.log('✅ Inició generarYAgregarJson()');
+
+  if (!diagramManager) {
+    alert('❌ diagramManager no está listo. Espera a que se cargue el diagrama primero.');
+    return;
+  }
+
   try {
-    // const resultadoJson = await generarJsonDesdePrompt(prompt.value);
+    if (!prompt.value || prompt.value.trim() === '') {
+      throw new Error('Por favor describe la interfaz que deseas crear');
+    }
 
-
-    // Si quieres, puedes limpiar el diagrama antes
-    // limpiarDiagrama();
-    console.log(prompt.value);
-    
-    // arbolJerarquico.value = resultadoJson;
-    // convertirJsonJerarquicoADiagrama(resultadoJson);
+    const resultadoJson = await generarJsonDesdePromptUniversal(prompt.value);
+    limpiarLienso();
+    arbolJerarquico.value = resultadoJson;
+    convertirJsonJerarquicoADiagrama(resultadoJson);
+    const jsonDiagrama = diagramManager.saveDiagram();
+    emitir([jsonDiagrama, arbolJerarquico.value]);
+    console.log('✅ Interfaz generada exitosamente desde el prompt:', prompt.value);
   } catch (error) {
-    console.error(error);
-    alert(error.message);
+    console.error('❌ Error al generar desde prompt:', error);
+    alert(`Error: ${error.message}`);
   }
 }
 
-async function generarJsonDesdePrompt(prompt) {
-  if (!prompt || prompt.trim() === '') {
-    throw new Error('El prompt está vacío');
-  }
+
+async function generarJsonDesdePromptUniversal(promptTexto) {
+  console.log('=== INICIO LLAMADA A IA ===');
+  console.log('Prompt enviado:', promptTexto);
 
   const instrucciones = `
-Quiero que generes un JSON estructurado siguiendo estas especificaciones. La respuesta siempre debe ser SOLO el JSON. No escribas explicaciones, no escribas introducción, no cierres con conclusiones. SOLO genera el JSON correspondiente.
+Eres un experto en generación de interfaces Flutter. Genera EXCLUSIVAMENTE un JSON que represente la interfaz descrita, siguiendo ESTAS REGLAS:
 
-Formato del JSON:
+1. ESTRUCTURA BASE OBLIGATORIA:
+{
+  "id": 0,
+  "tipo": "root",
+  "children": [{
+    "id": 1,
+    "tipo": "scaffold",
+    "pos": "0 0",
+    "size": "360 640",
+    "children": [
+      // Aquí van los componentes
+    ]
+  }]
+}
 
-La estructura es jerárquica. Cada nodo tiene:
+2. COMPONENTES VÁLIDOS (tipo):
+- scaffold (solo como raíz)
+- appbar, body, column, row, container
+- texto, input (requiere "field": "text"/"password"/"select")
+- listview, card, padding, center
+- button (usar container con texto)
 
-"id": número entero único (incremental)
-"tipo": uno de los componentes válidos (ver lista abajo)
-"pos": posición X Y como string "x y"
-"size": tamaño WIDTH HEIGHT como string "w h"
-"children": arreglo de nodos hijos
-"text" (opcional): solo si es tipo texto, input, select, check o radio
-"field" (obligatorio si es input): text, select, check o radio
-"opciones" (obligatorio si es select o radio): array de strings
-"redirige" (solo en tipo circle): puede ser null o scaffold{id} indicando a cuál scaffold redirige
+3. PROPIEDADES OBLIGATORIAS:
+- Cada componente debe tener "id", "tipo", "pos", "size"
+- Los "texto" deben tener "text"
+- Los "input" deben tener "field" y opcionalmente "opciones" si es select
 
-Lista de componentes válidos para "tipo":
+4. REGLAS DE DISEÑO:
+- Posiciones ("pos") como "x y" (ej: "16 20")
+- Tamaños ("size") como "ancho alto" (ej: "328 48")
+- Scaffold siempre 360x640 (tamaño móvil)
+- Usar jerarquías lógicas (column → row → componentes)
 
-scaffold
-appbar
-body
-circle (es un FloatingActionButton)
-drawer
-drawerItem
-drawerHeader
-container
-listview
-padding
-center
-row
-column
-sizedBox
-flexible
-card
-expanded
-input (requiere "field")
-texto
+5. FORMATO DE RESPUESTA:
+SOLO EL JSON, SIN COMENTARIOS, SIN "json", SIN EXPLICACIONES.
 
-Reglas específicas:
-Siempre debe comenzar con un nodo raíz con "tipo": "root" y "id": 0. "children" contiene de 1 a N scaffolds.
-Puede haber múltiples scaffold a nivel raíz.
-Cada scaffold puede contener como máximo:
-Un appbar (opcional)
-Un body (obligatorio si no hay drawer)
-Opcionalmente un circle (FloatingActionButton) como hijo directo del scaffold
-El "circle" puede tener "redirige": null o "redirige": "scaffold{id}" si redirige a otro scaffold del árbol.
-Los inputs (tipo: "input") requieren obligatoriamente el campo "field", que puede ser:
-"text" → "text" opcional
-"select" → "text" obligatorio, "opciones" obligatorio (array de strings)
-"check" → "text" obligatorio
-"radio" → "text" obligatorio, "opciones" obligatorio (array de strings)
-Los textos (tipo: "texto") deben tener siempre el campo "text".
-Los "children" pueden contener componentes anidados de cualquier tipo válido, organizados de manera coherente como en un diseño de interfaz.
-Genera estructuras extensas, realistas y completas, incluyendo listas, formularios, textos, inputs variados.
-El JSON generado debe ser sintácticamente correcto.
+EJEMPLO PARA FORMULARIO:
+{
+  "id": 0,
+  "tipo": "root",
+  "children": [{
+    "id": 1,
+    "tipo": "scaffold",
+    "pos": "0 0",
+    "size": "360 640",
+    "children": [{
+      "id": 2,
+      "tipo": "body",
+      "pos": "0 0",
+      "size": "360 640",
+      "children": [{
+        "id": 3,
+        "tipo": "column",
+        "pos": "0 0",
+        "size": "360 640",
+        "children": [
+          {
+            "id": 4,
+            "tipo": "texto",
+            "pos": "16 16",
+            "size": "328 24",
+            "text": "Título"
+          },
+          {
+            "id": 5,
+            "tipo": "input",
+            "pos": "16 60",
+            "size": "328 48",
+            "field": "text",
+            "text": "Campo de texto"
+          }
+        ]
+      }]
+    }]
+  }]
+}
 
-Respuesta esperada: SOLO el JSON correspondiente. SIN texto adicional.
-
-PROMPT DEL USUARIO:
-${prompt}
+DESCRIPCIÓN DEL USUARIO:
+"${promptTexto}"
   `.trim();
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o', // o gpt-4, gpt-4-turbo
-      messages: [{ role: 'user', content: instrucciones }],
-      temperature: 0.2
-    })
-  });
+  console.log('=== INSTRUCCIONES ENVIADAS ===');
+  console.log(instrucciones);
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error?.message || 'Error al generar el JSON');
-  }
-
-  // El contenido del JSON vendrá como texto, necesitamos parsearlo
-  const contenido = data.choices?.[0]?.message?.content;
-
-  let resultadoJson;
   try {
-    resultadoJson = JSON.parse(contenido);
-  } catch (err) {
-    console.error('Error al parsear JSON:', contenido);
-    throw new Error('El contenido generado no es un JSON válido.');
-  }
+    console.log('=== REALIZANDO PETICIÓN ===');
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4-turbo',
+        messages: [{ role: 'user', content: instrucciones }],
+        temperature: 0.3
+      })
+    });
 
-  return resultadoJson;
+    console.log('=== RESPUESTA HTTP ===');
+    console.log(`Status: ${response.status} ${response.statusText}`);
+
+    const data = await response.json();
+    
+    console.log('=== RESPUESTA COMPLETA API ===');
+    console.dir(data, { depth: null, colors: true });
+    
+    if (!response.ok) {
+      console.error('Error API:', data);
+      throw new Error(data.error?.message || 'Error en la API de OpenAI');
+    }
+
+    const rawContent = data.choices[0]?.message?.content;
+    console.log('=== CONTENIDO BRUTO ===');
+    console.log(typeof rawContent === 'string' ? rawContent : '[NO ES STRING]');
+    console.dir(rawContent);
+
+    if (!rawContent) {
+      throw new Error('La IA no devolvió contenido');
+    }
+
+    // Extraer JSON incluso si viene con markdown
+    let jsonString = rawContent;
+    try {
+      // Limpiar posibles bloques de código
+      if (jsonString.includes('```json')) {
+        jsonString = jsonString.split('```json')[1].split('```')[0];
+      } else if (jsonString.includes('```')) {
+        jsonString = jsonString.split('```')[1].split('```')[0];
+      }
+      jsonString = jsonString.trim();
+    } catch (e) {
+      console.log('No se pudo limpiar markdown, usando contenido directo');
+    }
+
+    console.log('=== JSON PRE-PARSEO ===');
+    console.log(jsonString);
+
+    let resultado;
+    try {
+      resultado = JSON.parse(jsonString);
+      console.log('=== JSON PARSEADO ===');
+      console.dir(resultado, { depth: null, colors: true });
+    } catch (parseError) {
+      console.error('Error parseando JSON:', parseError);
+      console.error('Contenido problemático:', jsonString);
+      
+      // Intentar extraer JSON de un string mal formado
+      try {
+        const jsonStart = jsonString.indexOf('{');
+        const jsonEnd = jsonString.lastIndexOf('}') + 1;
+        const possibleJson = jsonString.slice(jsonStart, jsonEnd);
+        resultado = JSON.parse(possibleJson);
+        console.log('Extraído JSON de string:', resultado);
+      } catch (secondError) {
+        throw new Error(`Respuesta no es JSON válido: ${secondError.message}`);
+      }
+    }
+
+    // Validación mejorada con mensajes específicos
+    const errors = [];
+    if (!resultado) errors.push('El resultado es null/undefined');
+    if (typeof resultado !== 'object') errors.push('No es un objeto');
+    if (resultado.tipo !== 'root') errors.push('Falta propiedad "tipo": "root"');
+    if (!Array.isArray(resultado.children)) errors.push('"children" no es un array');
+    
+    if (errors.length > 0) {
+      console.error('=== ERRORES DE VALIDACIÓN ===');
+      errors.forEach(err => console.error(err));
+      console.error('Estructura recibida:', resultado);
+      throw new Error(`Estructura inválida: ${errors.join(', ')}`);
+    }
+
+    console.log('=== ESTRUCTURA VALIDADA CON ÉXITO ===');
+    console.dir(resultado, { depth: 4, colors: true });
+    return resultado;
+
+  } catch (error) {
+    console.error('=== ERROR EN EL PROCESO ===');
+    console.error(error);
+    
+    // Mostrar stack trace completo
+    if (error.stack) {
+      console.error('Stack trace:', error.stack);
+    }
+    
+    throw error;
+  } finally {
+    console.log('=== FIN DE LLAMADA ===');
+  }
 }
 
 
